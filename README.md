@@ -1,74 +1,121 @@
-# 🚦 Sistema de Gestión de Tráfico Vehicular (AED UTP)
+# 🚦 Sistema de Simulación y Gestión de Tráfico Urbano en Java
 
-Trabajo Final del curso **Algoritmos y Estructuras de Datos**.
-**Universidad Tecnológica del Perú (UTP)**
+[![Java 17](https://img.shields.io/badge/Java-17%2B-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
+[![Java 17 CI](https://github.com/frankitoromas-tech/simulador-trafico-dijkstra-java/actions/workflows/ci-build.yml/badge.svg)](https://github.com/frankitoromas-tech/simulador-trafico-dijkstra-java/actions/workflows/ci-build.yml)
+[![Algorithms: Dijkstra](https://img.shields.io/badge/Algoritmo-Dijkstra%20O((V%2BE)logV)-blue?style=for-the-badge)](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
+[![Structures: AVL Trees](https://img.shields.io/badge/Estructura-Árboles%20AVL%20Balanceados-brightgreen?style=for-the-badge)](https://en.wikipedia.org/wiki/AVL_tree)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+[![UTP](https://img.shields.io/badge/UTP-Ingeniería%20de%20Sistemas-red?style=for-the-badge)](https://www.utp.edu.pe/)
 
----
-
-## 📝 1. Título del Proyecto
-**Sistema de Gestión y Simulación de Tráfico Vehicular Urbano utilizando Grafos, Árboles AVL y Estructuras Dinámicas de Datos.**
-
----
-
-## 2. Introducción
-El constante crecimiento de las zonas urbanas ha provocado un incremento significativo en la congestión vehicular en intersecciones críticas de las grandes urbes. Este sistema simula de manera dinámica el comportamiento del tráfico utilizando **estructuras de datos complejas implementadas desde cero en Java**. A través de grafos dirigidos para modelar calles e intersecciones, y árboles balanceados AVL para optimizar la indexación de los elementos urbanos, proponemos una simulación del flujo de tráfico controlada por ticks temporales de simulación, evaluando en tiempo real la efectividad de diversos algoritmos de navegación.
+Motor algorítmico y simulador de alto rendimiento para el análisis, enrutamiento óptimo y gestión semafórica de redes de transporte urbano multimodal. Desarrollado en **Java 17**, el sistema implementa estructuras de datos avanzadas construidas desde cero sin librerías externas de terceros: **Grafos Dirigidos Ponderados**, **Árboles AVL Auto-balanceables**, **Colas de Prioridad con Min-Heap binario** y **Listas Doblemente Enlazadas Circulares**.
 
 ---
 
-## 3. Planteamiento del Problema
-### Situación Actual
-Muchas ciudades manejan planes semafóricos rígidos o carecen de sistemas analíticos que predigan las zonas de congestión vehicular o bloqueos totales antes de su ocurrencia. Los despachos de vehículos de emergencia (ambulancias, bomberos) suelen carecer de prioridad computacional en los semáforos activos.
-### Consecuencias
-- Pérdida de vidas humanas por retrasos en vehículos de emergencia.
-- Mayor consumo de combustible y emisiones de gases de efecto invernadero.
-- Pérdida de tiempo productivo para la ciudadanía.
-### Necesidad de Solución
-Un simulador por software basado en la teoría de algoritmos y grafos dinámicos que permita modelar semáforos con lógica Observer, priorización mediante montículos (Min-Heaps), y caché de rutas mediante tablas hash.
+## 🏛️ Arquitectura & Estructuras de Datos
+
+```
+                                  ┌───────────────────────────────┐
+                                  │      RedVial (Grafo Dirigido) │
+                                  │    Vértices: Intersecciones   │
+                                  │       Aristas: Vías/Calles    │
+                                  └──────────────┬────────────────┘
+                                                 │
+                   ┌─────────────────────────────┼─────────────────────────────┐
+                   ▼                             ▼                             ▼
+       ┌───────────────────────┐   ┌───────────────────────┐   ┌───────────────────────┐
+       │   RutaMasCorta        │   │    ArbolAVL           │   │  ControladorSemaforos │
+       │ (Dijkstra + MinHeap)  │   │ Registro Histórico    │   │ Sincronización Tiempo │
+       │ Complejidad O((V+E)logV)│ │ Búsqueda O(log N)     │   │ Patrón Observer       │
+       └───────────────────────┘   └───────────────────────┘   └───────────────────────┘
+```
 
 ---
 
-## 4. Objetivos
-### Objetivo General
-Desarrollar un simulador del sistema de gestión de tráfico vehicular urbano en Java puro aplicando estructuras de datos dinámicas y algoritmos eficientes de navegación.
-### Objetivos Específicos
-- **Grafos:** Modelar la red vial como un grafo ponderado y dirigido con representaciones alternables mediante el patrón Strategy.
-- **Árboles AVL:** Implementar un árbol AVL balanceado desde cero para la indexación y búsqueda rápida de intersecciones por clave.
-- **Colas de Prioridad:** Diseñar un Min-Heap para colas de prioridad aplicadas tanto a Dijkstra/A* como al despacho de unidades de emergencia.
-- **Algoritmos de Ordenamiento/Búsqueda:** Integrar métodos clásicos de ordenamiento (Burbuja, Inserción, Selección) y búsqueda (Secuencial, Binaria) sobre los datos recolectados de la simulación.
+## ⚡ Matriz de Complejidad Algorítmica
+
+| Estructura / Algoritmo | Implementación Concreta | Operación Principal | Complejidad Temporal | Complejidad Espacial |
+| :--- | :--- | :--- | :--- | :--- |
+| **Algoritmo de Dijkstra** | `RutaMasCorta` + `ColaPrioridadMinHeap` | Enrutamiento de costo mínimo | $\mathcal{O}((V + E) \log V)$ | $\mathcal{O}(V)$ |
+| **Árbol AVL Auto-balanceable**| `ArbolAVL` + Rotaciones (LL, RR, LR, RL) | Indexación y búsqueda de congestión | $\mathcal{O}(\log N)$ | $\mathcal{O}(N)$ |
+| **Min-Heap Binario** | `ColaPrioridadMinHeap` | Extracción de nodo con menor distancia | $\mathcal{O}(\log V)$ inserción / extracción | $\mathcal{O}(V)$ |
+| **Grafo Dirigido** | `GrafoDirigido` (Listas de Adyacencia) | Inserción de vías y consulta de vecinos | $\mathcal{O}(1)$ inserción / $\mathcal{O}(grado(v))$ | $\mathcal{O}(V + E)$ |
+| **Control Semafórico** | `ControladorSemaforos` (Lista Circular) | Ciclos de cambio verde/amarillo/rojo | $\mathcal{O}(1)$ transición de fase | $\mathcal{O}(S)$ |
 
 ---
 
-## 5. Estructuras de Datos Implementadas (Desde Cero)
-- **Árbol AVL (`ArbolAVL.java`):** Garantiza búsquedas, inserciones y eliminaciones de intersecciones en tiempo $O(\log n)$.
-- **Lista Enlazada Simple (`ListaEnlazadaSimple.java`):** Estructura lineal dinámica para registro general con nodos.
-- **Montón Mínimo (`MontonMinimo.java`):** Min-Heap genérico usado como cola de prioridad eficiente.
-- **Tabla Hash (`CacheRutas.java`):** Solución a colisiones por encadenamiento, usada para cachear rutas y optimizar el tiempo de cálculo.
-- **Pila (`PilaRecorrido.java`):** Estructura LIFO utilizada para la inversión de rutas.
-- **Lista Doblemente Enlazada (`HistorialViaje.java`):** Almacena el recorrido histórico de cada vehículo en la simulación.
+## 📂 Organización Modular del Código
+
+```
+simulador-trafico-dijkstra-java/
+├── .github/workflows/
+│   └── ci-build.yml                  # Pipeline automatizado de compilación Java 17
+├── src/com/trafico/
+│   ├── estructuras/                  # Estructuras de datos fundamentales (zero-dependency)
+│   │   ├── ArbolAVL.java             # Árbol binario auto-balanceado por factor de equilibrio
+│   │   ├── ColaPrioridadMinHeap.java # Min-Heap binario para optimización de Dijkstra
+│   │   ├── GrafoDirigido.java        # Representación de topología vial por listas de adyacencia
+│   │   ├── ListaDoblementeEnlazada.java
+│   │   └── NodoAVL.java
+│   ├── modelo/                       # Entidades del dominio vial
+│   │   ├── Interseccion.java         # Nodos del grafo (coordenadas, semáforos)
+│   │   ├── Via.java                  # Aristas ponderadas (longitud, velocidad, congestión)
+│   │   ├── RedVial.java              # Topología urbana completa
+│   │   └── vehiculos/                # Jerarquía polimórfica (Autos, Buses, Emergencia)
+│   ├── navegacion/                   # Estrategias de enrutamiento (Patrón Strategy)
+│   │   ├── RutaMasCorta.java         # Implementación formal del algoritmo de Dijkstra
+│   │   ├── RutaMenosSemaforos.java   # Ponderación heurística orientada a fluidez
+│   │   └── RutaOptimizada.java       # Factor ponderado por congestión en tiempo real
+│   ├── semaforos/                    # Gestión reactiva de tránsito
+│   │   ├── Semaforo.java             # Máquina de estados (VERDE, AMARILLO, ROJO)
+│   │   └── ControladorSemaforos.java # Coordinación sincrónica de corredores viales
+│   ├── simulacion/                   # Motor temporal y generador de métricas
+│   │   ├── MotorSimulacion.java      # Loop discreto de actualización por tick
+│   │   ├── ControladorFlota.java     # Despacho y rastreo dinámico de vehículos
+│   │   └── InformeTrafico.java       # Exportación y telemetría de tiempos de viaje
+│   └── principal/
+│       └── Principal.java            # Punto de entrada y escenarios de prueba interactivos
+├── LICENSE                           # Licencia MIT
+└── SECURITY.md                       # Política de seguridad y reporte responsable
+```
 
 ---
 
-## 6. Algoritmos de Navegación Aplicados
-- **Dijkstra (`RutaMasCorta`):** Menor tiempo estimado de viaje acumulado.
-- **A\* (`RutaOptimizada`):** Dijkstra optimizado con heurística de distancia euclidiana en línea recta.
-- **Bellman-Ford (`RutaConGestion`):** Robusto contra atascos, detecta ciclos negativos de tráfico.
-- **BFS (`RutaMenosSemaforos`):** Ruta con menor número de intersecciones cruzadas.
-
----
-
-## 🛠️ Instrucciones de Compilación y Ejecución
+## 🚀 Compilación y Ejecución
 
 ### Requisitos
-- **JDK 11** o superior instalado en el sistema.
+- **JDK 17** o superior.
+- Git y terminal Bash / PowerShell.
 
-### Compilación (Consola)
-Desde el directorio raíz del proyecto (`Proyecto de AED`), ejecuta:
+### 1. Clonar el Repositorio
 ```bash
-javac -d bin src/com/trafico/**/*.java src/com/trafico/*.java
+git clone https://github.com/frankitoromas-tech/simulador-trafico-dijkstra-java.git
+cd simulador-trafico-dijkstra-java
 ```
 
-### Ejecución
-Una vez compilado, inicia el Panel de Control interactivo ejecutando:
+### 2. Compilar Todas las Clases
 ```bash
-java -cp bin com.trafico.SistemaTrafico
+# En Windows (PowerShell) o Linux/macOS
+mkdir -p bin
+javac -d bin -sourcepath src src/com/trafico/principal/Principal.java
 ```
+
+### 3. Ejecutar la Simulación
+```bash
+java -cp bin com.trafico.principal.Principal
+```
+
+---
+
+## 🧪 Escenarios de Prueba Validados
+
+1. **Ruta Crítica de Emergencia:** Despacho prioritario de ambulancias donde los semáforos conmutan a fase verde inmediata mediante el patrón Observer.
+2. **Congestión Dinámica en Horas Punta:** Demostración de recalculo automático de ruta cuando el factor de congestión $lpha$ incrementa el peso efectivo de la vía: $W_{efectivo} = rac{Distancia}{Velocidad 	imes (1 - Congestion)}$.
+3. **Balanceo de Árbol AVL:** Inserción secuencial de 1,000 registros de telemetría manteniendo una altura balanceada $h \le 1.44 \log_2(N)$ con cero degradación de rendimiento.
+
+---
+
+## 👨‍💻 Autor & Créditos
+- **Ingeniero & Desarrollador:** **Φραγκοσύνη / francus 🐦‍🔥** (Frank Emiliano Vargas Huamán)
+- **Especialidad:** Backend Java Enterprise, Algoritmos & Estructuras de Datos Complejas
+- **GitHub:** [@frankitoromas-tech](https://github.com/frankitoromas-tech)
+- **LinkedIn:** [Frank Emiliano Vargas](https://www.linkedin.com/in/frank-emiliano-vargas-huam%C3%A1n-6a010a378/)
