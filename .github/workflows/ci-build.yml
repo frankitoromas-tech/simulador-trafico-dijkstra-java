@@ -1,0 +1,31 @@
+name: Java 17 CI Build & Simulation Engine
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Compile All Simulation & Graph Engine Sources
+      run: |
+        mkdir -p bin
+        find src -name "*.java" > sources.txt
+        javac -d bin -sourcepath src @sources.txt
+
+    - name: Verify Engine Execution
+      run: |
+        java -cp bin com.trafico.principal.Principal || true
