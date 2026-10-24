@@ -1,4 +1,4 @@
-name: Java 17 CI Build & Simulation Engine
+name: Java 17 CI Build & Automated Tests
 
 on:
   push:
@@ -19,13 +19,10 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+        cache: 'maven'
 
-    - name: Compile All Simulation & Graph Engine Sources
-      run: |
-        mkdir -p bin
-        find src -name "*.java" > sources.txt
-        javac -d bin -sourcepath src @sources.txt
+    - name: Build and Run Automated Tests with Maven
+      run: mvn clean test -B
 
-    - name: Verify Engine Execution
-      run: |
-        java -cp bin com.trafico.principal.Principal || true
+    - name: Verify Application Compilation
+      run: mvn clean compile -B
