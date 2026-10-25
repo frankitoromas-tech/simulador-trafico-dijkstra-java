@@ -91,4 +91,49 @@ class MontonMinimoTest {
         assertThat(heap.estaVacio()).isTrue();
         assertThat(heap.getTamanio()).isEqualTo(0);
     }
+@Test
+    @DisplayName("Debe mantener formalmente el invariante de montículo mínimo en el arreglo interno")
+    void testInvariantePropiedadMinHeap() {
+        int[] valores = {42, 15, 88, 3, 27, 9, 100, 1, 55, 14};
+        for (int v : valores) {
+            heap.insertar(v);
+            assertThat(heap.cumpleInvarianteMinHeap()).isTrue();
+        }
+
+        assertThat(heap.getTamanio()).isEqualTo(valores.length);
+        assertThat(heap.verMinimo()).isEqualTo(1);
+
+        while (!heap.estaVacio()) {
+            heap.extraerMinimo();
+            assertThat(heap.cumpleInvarianteMinHeap()).isTrue();
+        }
+    }
+
+    @Test
+    @DisplayName("Debe manejar valores duplicados y negativos manteniendo el invariante Min-Heap")
+    void testDuplicadosYNegativos() {
+        heap.insertar(10);
+        heap.insertar(-5);
+        heap.insertar(10);
+        heap.insertar(-20);
+        heap.insertar(0);
+        heap.insertar(-5);
+
+        assertThat(heap.cumpleInvarianteMinHeap()).isTrue();
+        assertThat(heap.verMinimo()).isEqualTo(-20);
+
+        assertThat(heap.extraerMinimo()).isEqualTo(-20);
+        assertThat(heap.cumpleInvarianteMinHeap()).isTrue();
+        assertThat(heap.extraerMinimo()).isEqualTo(-5);
+        assertThat(heap.cumpleInvarianteMinHeap()).isTrue();
+        assertThat(heap.extraerMinimo()).isEqualTo(-5);
+        assertThat(heap.cumpleInvarianteMinHeap()).isTrue();
+        assertThat(heap.extraerMinimo()).isEqualTo(0);
+        assertThat(heap.cumpleInvarianteMinHeap()).isTrue();
+        assertThat(heap.extraerMinimo()).isEqualTo(10);
+        assertThat(heap.cumpleInvarianteMinHeap()).isTrue();
+        assertThat(heap.extraerMinimo()).isEqualTo(10);
+        assertThat(heap.cumpleInvarianteMinHeap()).isTrue();
+        assertThat(heap.estaVacio()).isTrue();
+    }
 }

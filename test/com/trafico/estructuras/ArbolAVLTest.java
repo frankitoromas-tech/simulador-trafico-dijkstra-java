@@ -58,6 +58,9 @@ class ArbolAVLTest {
         arbol.insertar(10, "10");
 
         assertThat(arbol.getTamanio()).isEqualTo(3);
+        assertThat(arbol.getClaveRaiz()).isEqualTo(20);
+        assertThat(arbol.getAltura()).isEqualTo(2);
+        assertThat(arbol.estaBalanceado()).isTrue();
         assertThat(arbol.buscar(10)).isEqualTo("10");
         assertThat(arbol.buscar(20)).isEqualTo("20");
         assertThat(arbol.buscar(30)).isEqualTo("30");
@@ -66,16 +69,71 @@ class ArbolAVLTest {
     @Test
     @DisplayName("Debe auto-balancear ante inserciones desbalanceadas (Caso Derecha-Derecha / Rotación Izquierda)")
     void testAutoBalanceoDerechaDerecha() {
-        // Inserción secuencial creciente: 10 -> 20 -> 30
+        // Insercion secuencial creciente: 10 -> 20 -> 30
         arbol.insertar(10, "10");
         arbol.insertar(20, "20");
         arbol.insertar(30, "30");
 
         assertThat(arbol.getTamanio()).isEqualTo(3);
+        assertThat(arbol.getClaveRaiz()).isEqualTo(20);
+        assertThat(arbol.getAltura()).isEqualTo(2);
+        assertThat(arbol.estaBalanceado()).isTrue();
         assertThat(arbol.buscar(10)).isEqualTo("10");
         assertThat(arbol.buscar(20)).isEqualTo("20");
         assertThat(arbol.buscar(30)).isEqualTo("30");
     }
+
+    @Test
+    @DisplayName("Debe auto-balancear ante inserciones en zigzag (Caso Izquierda-Derecha / Doble Rotacion LR)")
+    void testAutoBalanceoIzquierdaDerecha() {
+        // Insercion en zigzag izquierdo: 30 -> 10 -> 20
+        arbol.insertar(30, "30");
+        arbol.insertar(10, "10");
+        arbol.insertar(20, "20");
+
+        assertThat(arbol.getTamanio()).isEqualTo(3);
+        assertThat(arbol.getClaveRaiz()).isEqualTo(20);
+        assertThat(arbol.getAltura()).isEqualTo(2);
+        assertThat(arbol.estaBalanceado()).isTrue();
+        assertThat(arbol.buscar(10)).isEqualTo("10");
+        assertThat(arbol.buscar(20)).isEqualTo("20");
+        assertThat(arbol.buscar(30)).isEqualTo("30");
+    }
+
+    @Test
+    @DisplayName("Debe auto-balancear ante inserciones en zigzag (Caso Derecha-Izquierda / Doble Rotacion RL)")
+    void testAutoBalanceoDerechaIzquierda() {
+        // Insercion en zigzag derecho: 10 -> 30 -> 20
+        arbol.insertar(10, "10");
+        arbol.insertar(30, "30");
+        arbol.insertar(20, "20");
+
+        assertThat(arbol.getTamanio()).isEqualTo(3);
+        assertThat(arbol.getClaveRaiz()).isEqualTo(20);
+        assertThat(arbol.getAltura()).isEqualTo(2);
+        assertThat(arbol.estaBalanceado()).isTrue();
+        assertThat(arbol.buscar(10)).isEqualTo("10");
+        assertThat(arbol.buscar(20)).isEqualTo("20");
+        assertThat(arbol.buscar(30)).isEqualTo("30");
+    }
+
+    @Test
+    @DisplayName("Debe mantener el invariante de balance AVL ante inserciones secuenciales masivas")
+    void testInvarianteBalanceMasivo() {
+        for (int i = 1; i <= 100; i++) {
+            arbol.insertar(i, "Valor-" + i);
+        }
+
+        assertThat(arbol.getTamanio()).isEqualTo(100);
+        assertThat(arbol.estaBalanceado()).isTrue();
+        // Cota superior teorica de altura AVL: h <= 1.4404 * log2(100 + 2) ~ 9.6 -> h <= 10
+        assertThat(arbol.getAltura()).isLessThanOrEqualTo(10);
+
+        for (int i = 1; i <= 100; i++) {
+            assertThat(arbol.buscar(i)).isEqualTo("Valor-" + i);
+        }
+    }
+
 
     @Test
     @DisplayName("Debe eliminar nodos correctamente y reajustar tamaño")

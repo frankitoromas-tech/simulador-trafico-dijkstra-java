@@ -82,6 +82,23 @@ public class MontonMinimo<T extends Comparable<T>> {
     public boolean estaVacio()  { return tamanio == 0; }
     public int getTamanio()     { return tamanio; }
 
+    /**
+     * Verifica formalmente si el arreglo interno cumple con el invariante de Min-Heap:
+     * Para todo nodo i > 0, datos[padre] <= datos[i].
+     *
+     * @return true si todos los elementos satisfacen la propiedad de orden de monticulo minimo
+     */
+    @SuppressWarnings("unchecked")
+    public boolean cumpleInvarianteMinHeap() {
+        for (int i = 1; i < tamanio; i++) {
+            int padre = (i - 1) / 2;
+            if (((T) datos[i]).compareTo((T) datos[padre]) < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void vaciar() {
         datos = new Object[CAPACIDAD_INICIAL];
         tamanio = 0;

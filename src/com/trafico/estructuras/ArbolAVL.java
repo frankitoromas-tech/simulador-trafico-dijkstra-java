@@ -189,6 +189,29 @@ public class ArbolAVL<K extends Comparable<K>, V> {
     public int getTamanio() { return tamanio; }
     public boolean estaVacio() { return raiz == null; }
 
+    public int getAltura() { return getAltura(raiz); }
+
+    public K getClaveRaiz() { return raiz != null ? raiz.clave : null; }
+
+    public int getFactorBalanceRaiz() { return getFactorBalance(raiz); }
+
+    /**
+     * Verifica formalmente si cada nodo del arbol cumple con el invariante de balance AVL:
+     * |altura(izquierdo) - altura(derecho)| <= 1.
+     *
+     * @return true si el arbol esta completamente balanceado
+     */
+    public boolean estaBalanceado() {
+        return verificarBalanceRec(raiz);
+    }
+
+    private boolean verificarBalanceRec(Nodo nodo) {
+        if (nodo == null) return true;
+        int bf = getFactorBalance(nodo);
+        if (bf < -1 || bf > 1) return false;
+        return verificarBalanceRec(nodo.izquierdo) && verificarBalanceRec(nodo.derecho);
+    }
+
     // ─── Auxiliares de Balanceo y Rotación ─────────────────────────────────────
 
     private int getAltura(Nodo n) { return n == null ? 0 : n.altura; }
